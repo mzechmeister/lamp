@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>torch</title>
+<link rel="shortcut icon"type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAdklEQVQ4T2NkYI/8z0ABYEQ34NvX6wxsVxgYWMw1GXCxke3DMIBUx2B1AbIhINcgA5DL8LoA5OyBNQBkO7IrkL2A7nyQWqyBSLEByK6AuQCb7ThdQDUDuLghUfbn5HVwwsIGcCYkUDhQbADIxoENA4pcQGymAgCi4lYBReFMiAAAAABJRU5ErkJggg==" created_with="https://www.favicon.cc/">
+<style>
+body {
+    touch-action: none;  /* prevent pinch zoom */
+    margin: 0;
+}
+
+#onoff {
+    background: black;
+    display: block;
+    height: 100vh;
+    margin: 0;
+    width: 100%;
+    -webkit-appearance: none;
+}
+
+#onoff:checked {
+    background: gold;
+}
+</style>
+</head>
+
+<body>
+<input id="onoff" type="checkbox">
+
+<script>
+if ('mediaDevices' in navigator) {
+  // Get the environment camera (usually the second one)
+  navigator.mediaDevices.enumerateDevices().then(devices => {
+  
+    const cameras = devices.filter(device => device.kind === 'videoinput');
+
+    if (cameras.length === 0)
+      document.body.innerHTML = 'No camera found on this device.'
+    const camera = cameras[cameras.length - 1];
+
+    // Create stream and get video track
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: camera.deviceId,
+      }
+    }).then(stream => {
+      const track = stream.getVideoTracks()[0];
+            
+      onoff.onclick = e => {
+        track.applyConstraints({torch: onoff.checked});
+      };
+    });
+  });
+}
+</script>
+
+</body>
+</html>
